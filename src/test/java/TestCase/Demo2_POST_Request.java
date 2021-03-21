@@ -1,6 +1,7 @@
 package TestCase;
 
 import io.restassured.RestAssured;
+import io.restassured.response.Response;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -12,6 +13,7 @@ import static org.hamcrest.Matchers.equalTo;
 
 public class Demo2_POST_Request {
 
+    protected String boardId;
 
     // yeni bir kullanıcı ekleyeceğiz post ile
 
@@ -32,27 +34,37 @@ public class Demo2_POST_Request {
         RestAssured.baseURI="https://api.trello.com/1";
 
     }
-    @Test
+    @Test(priority = 1)
     public void testPost() {
-        //given ile content-type ve map'i verip içeriğini vermiş olduk. When için sadece post yazdık çünkü zaten yukarıda base bilgilerini verdim.
-        //then kısmında yine kontrollerimizi yaptık. Dönüş olarak 201 gelmeli "created olduğuna dair.
-        //ve gelen response body loglarını kontrol ettik, doğru gelmiş mi diye.
-        //hepsinin sağlanması gerektiğini belirtmek için and() annotation'unu kullanıyoruz.
+        Response response =
+                given()
+                        .contentType("application/json")
+                        .body(map)
+                        .log().all().
+                        when()
+                        .post("/boards");
 
-        //Mehmet abinin dediği : X servisi a,b,c parametreleriyle çağırılır. Y sonucu geldiği görülür dedi. yani post gibi ama netleştir kafanda
-
-        given()
-                .contentType("application/json")
-                .body(map)
-        .when()
-                .post("/boards")
-        .then()
+        response.then()
                 .statusCode(200)
-                .and()
-//                .body("SuccessCode",equalTo("OPERATION_SUCCESS"))
-//                .and()
-//                .body("Message",equalTo("Operation completed successfully"))
-                .log().all();  // test sonrası response'u basıyor :D
+                .extract().body().jsonPath().get("name").equals("ADADADAD");
 
+        boardId = (String) response.then()
+                .extract().jsonPath().getMap("$").get("id");
+        System.out.println(boardId);
+    }
+
+    @Test(priority = 2)
+    public void createList() {
+        System.out.println("board id : " + boardId);
+        Response response =
+                given()
+                        .contentType("application/json")
+                        .body(map)
+                        .log().all().
+                        when()
+                        .post("/boards/"+boardId);
+
+        response.then()
+                .statusCode(200);
     }
 }
