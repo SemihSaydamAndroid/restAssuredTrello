@@ -1,0 +1,10 @@
+-------------------------------------------------------------------------------
+Test set: TestSuite
+-------------------------------------------------------------------------------
+Tests run: 2, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 2.496 s <<< FAILURE! - in TestSuite
+CreateTweet(TestCase.TwitterSecondTest)  Time elapsed: 1.275 s  <<< FAILURE!
+java.lang.NoClassDefFoundError: com/github/scribejava/core/model/AbstractRequest
+	at TestCase.TwitterSecondTest.CreateTweet(TwitterSecondTest.java:29)
+Caused by: java.lang.ClassNotFoundException: com.github.scribejava.core.model.AbstractRequest
+	at TestCase.TwitterSecondTest.CreateTweet(TwitterSecondTest.java:29)
+
